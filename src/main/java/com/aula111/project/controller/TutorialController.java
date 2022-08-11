@@ -18,27 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 import com.aula111.project.model.Tutorial;
 import com.aula111.project.repository.TutorialRepository;
 
-
 @RestController
 @RequestMapping("/api")
-public class TutorialController{
+public class TutorialController {
 
     @Autowired
     TutorialRepository repo;
-
-    @GetMapping("/tutorials")
-    public ResponseEntity<List<Tutorial>> getAllTutorials(){
-
-        List<Tutorial> tutorials = new ArrayList<Tutorial>();
-
-        repo.findAll().forEach(tutorials::add);
-
-        if (tutorials.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return new ResponseEntity<>(tutorials, HttpStatus.OK);
-    }
 
     @PostMapping("/tutorials")
     public ResponseEntity<Tutorial> createTutorial(@RequestBody Tutorial tutorial) {
@@ -46,39 +31,64 @@ public class TutorialController{
         return new ResponseEntity<>(_tutorial, HttpStatus.CREATED);
     }
 
-    @GetMapping("/tutorials/published/{status}")
-    public ResponseEntity<List<Tutorial>> getPublished(@PathVariable("status") Boolean status){
-        List<Tutorial> tutorials = repo.findByPublished(status);
-        if (tutorials.isEmpty()) {
+    @GetMapping("/tutorials")
+    public ResponseEntity<List<Tutorial>> getAllTutorials(){
+
+        List<Tutorial> _tutorials = new ArrayList<Tutorial>();
+
+        repo.findAll().forEach(_tutorials::add);
+
+        if(_tutorials.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);   
+        }
+
+        return new ResponseEntity<>(_tutorials, HttpStatus.OK);
+
+    }
+
+    
+    @GetMapping("/tutorials/pub/{status}")
+    public ResponseEntity<List<Tutorial>> getPublished(@PathVariable("status") boolean status){
+        List<Tutorial> _tutorials = repo.findByPublished(status);
+
+        if (_tutorials.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(tutorials, HttpStatus.OK);
-        
-    }
-
-    @DeleteMapping("/tutorials/{id}")
-    public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable("id") long id) {
-        repo.deleteById(id);
-        
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(_tutorials, HttpStatus.OK);
     }
 
     @GetMapping("/tutorials/{id}")
-    public ResponseEntity<Tutorial> getTutorialById(@PathVariable("id") long id) {
-        Tutorial tutorial = repo.findById(id);
+    public ResponseEntity<Tutorial> getTutorialById(@PathVariable("id") long id){
+        Tutorial _tutorial = repo.findById(id);
 
-        return new ResponseEntity<>(tutorial, HttpStatus.OK);
+        if(_tutorial == null){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);   
+        }
+
+        return new ResponseEntity<>(_tutorial,HttpStatus.OK);
     }
 
-    @PutMapping("/tutorials/{id}")
-    public ResponseEntity<Tutorial> updateTutorial(@PathVariable("id") long id, @RequestBody Tutorial tutorial) {
+    @PutMapping("/tutorials/update/{id}")
+    public ResponseEntity<Tutorial> updateTutorial(@PathVariable("id") long id, @RequestBody Tutorial tutorial){
+
         Tutorial _tutorial = repo.findById(id);
 
         _tutorial.setTitle(tutorial.getTitle());
         _tutorial.setDescription(tutorial.getDescription());
         _tutorial.setPublished(tutorial.getPublished());
-        
+
         return new ResponseEntity<>(repo.save(_tutorial), HttpStatus.OK);
+
     }
+
+    @DeleteMapping("/tutorials/delete/{id}")
+    public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable("id") long id){
+
+        repo.deleteById(id);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    
 }
