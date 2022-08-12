@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.aula111.project.model.Tutorial;
@@ -47,8 +48,8 @@ public class TutorialController {
     }
 
     
-    @GetMapping("/tutorials/status/{status}")
-    public ResponseEntity<List<Tutorial>> getPublished(@PathVariable("status") boolean status){
+    @GetMapping("/tutorials/status")
+    public ResponseEntity<List<Tutorial>> getPublished(@RequestParam boolean status){
         List<Tutorial> _tutorials = repo.findByPublished(status);
 
         if (_tutorials.isEmpty()) {
