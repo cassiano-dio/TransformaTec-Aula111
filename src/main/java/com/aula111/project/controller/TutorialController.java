@@ -47,7 +47,7 @@ public class TutorialController {
     }
 
     
-    @GetMapping("/tutorials/pub/{status}")
+    @GetMapping("/tutorials/status/{status}")
     public ResponseEntity<List<Tutorial>> getPublished(@PathVariable("status") boolean status){
         List<Tutorial> _tutorials = repo.findByPublished(status);
 
@@ -69,7 +69,7 @@ public class TutorialController {
         return new ResponseEntity<>(_tutorial,HttpStatus.OK);
     }
 
-    @PutMapping("/tutorials/update/{id}")
+    @PutMapping("/tutorials/{id}")
     public ResponseEntity<Tutorial> updateTutorial(@PathVariable("id") long id, @RequestBody Tutorial tutorial){
 
         Tutorial _tutorial = repo.findById(id);
@@ -82,7 +82,7 @@ public class TutorialController {
 
     }
 
-    @DeleteMapping("/tutorials/delete/{id}")
+    @DeleteMapping("/tutorials/{id}")
     public ResponseEntity<HttpStatus> deleteTutorial(@PathVariable("id") long id){
 
         repo.deleteById(id);
